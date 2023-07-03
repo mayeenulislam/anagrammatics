@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<title>Anagram + Alpine</title>
+
+	<!--
+    AlpineJS
+    ---------------------------------- -->
+	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+	<!--
+    TailwindCSS
+    ---------------------------------- -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						clifford: "#da373d",
+					},
+				},
+			},
+		};
+	</script>
+</head>
+
+<body>
+	<main class="font-merriweather flex h-screen bg-slate-100" x-data="{ baseTextArr: [], anagramTextArr: [], matchedArr: [] }">
+		<div class="m-auto bg-white rounded shadow p-10 w-96">
+			<h2 class="text-center uppercase text-xs mb-0 text-gray-500">Anagram Playground</h2>
+			<h1 class="text-3xl text-center font-bold mb-3 text-teal-700">Anagramatics</h1>
+			<p class="text-center mb-5 text-gray-400 text-sm">Try to make anagram of your base text and save the combination, when you are done</p>
+
+			<div class=" mb-4">
+				<label for="user-input" class="font-bold">Base Text</label>
+				<span class="text-gray-500 italic text-xs">(e.g. Apple Macintosh)</span>
+				<input
+					type="text"
+					id="user-input"
+					class="w-full border px-3 py-2 rounded"
+					placeholder="Type/Paste your text"
+					autocomplete="off"
+					autofocus
+					@keyup="baseTextArr = $event.target.value.replace(/\s/g, '').toUpperCase().split(''); matchedArr = findMatchingValues(baseTextArr, anagramTextArr)"
+				/>
+			</div>
+
+			<div
+				class="mb-4 rounded p-2 bg-yellow-100 text-xs min-h-[32px]"
+				x-html="strikeMatchingValues(baseTextArr, matchedArr).join(' ')"
+			></div>
+
+			<div>
+				<label for="anagram-input" class="font-bold">Anagram</label>
+				<span class="text-gray-500 italic text-xs">(e.g. laptop machines)</span>
+				<div class="relative">
+					<input
+						id="anagram-input"
+						type="text"
+						placeholder="Type your anagrammatic text"
+						class="w-full border px-3 py-2 rounded"
+						autocomplete="off"
+						@keyup="anagramTextArr = $event.target.value.replace(/\s/g, '').toUpperCase().split(''); matchedArr = findMatchingValues(baseTextArr, anagramTextArr);"
+					/>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<script>
+		/**
+		 * Find the maching values only.
+		 * Also works with duplicates.
+		 * 
+		 * Check on the basis of the anagram array, to get only the matched items.
+		 * 
+		 * @param {array} baseArray - the Base Text characters' array.
+		 * @param {array} anagramArray - the Anagram Text characters' array.
+		 * @returns {array} an array of matching items only.
+		 */
+		const findMatchingValues = (baseArray, anagramArray) => {
+			let matechedArray = [];
+			anagramArray.forEach(char => baseArray.includes(char) ? matechedArray.push(char) : false);
+			return matechedArray;
+		}
+
+		/**
+		 * Strike Matching Values.
+		 * 
+		 * @link https://stackoverflow.com/a/76608040/1743124
+		 * 
+		 * @param {array} baseArray - the Base Text characters' array.
+		 * @param {array} matchedArray - the Matched Text characters' array.
+		 * @returns {array} Striked only the matched characters in an array.
+		 */
+		const strikeMatchingValues = (baseArray, matchedArray) => {
+			const hash = matchedArray.reduce((h, s) => {
+				h[s] = (h[s] || 0) + 1;
+				return h;
+			}, {});
+
+			return baseArray.map(s => hash[s] && hash[s]-- ? `<del class="text-gray-300">${s}</del> ` : `<strong>${s}</strong>`);
+		}
+	</script>
+</body>
+
+</html>
