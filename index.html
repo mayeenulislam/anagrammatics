@@ -36,8 +36,10 @@
 			<h1 class="text-3xl text-center font-bold mb-3 text-teal-700">Anagrammatics</h1>
 			<p class="text-center mb-5 text-gray-400 text-sm">Try to make anagram of your base text and save the combination, when you are done</p>
 
+			<hr class="mx-[-2.5rem] mb-5">
+
 			<div class=" mb-4">
-				<label for="user-input" class="font-bold">Base Text</label>
+				<label for="user-input" class="font-bold text-teal-700">Base Text</label>
 				<span class="text-gray-500 italic text-xs">(e.g. Apple Macintosh)</span>
 				<input
 					type="text"
@@ -52,11 +54,12 @@
 
 			<div
 				class="mb-4 rounded p-2 bg-yellow-100 text-xs min-h-[32px]"
-				x-html="strikeMatchingValues(baseTextArr, matchedArr).join(' ')"
+				x-show="baseTextArr.length > 0"
+				x-html="strikeMatchingValues(baseTextArr, matchedArr).join(' ');"
 			></div>
 
 			<div>
-				<label for="anagram-input" class="font-bold">Anagram</label>
+				<label for="anagram-input" class="font-bold text-teal-700">Anagram</label>
 				<span class="text-gray-500 italic text-xs">(e.g. laptop machines)</span>
 				<div class="relative">
 					<input
@@ -104,7 +107,7 @@
 				return h;
 			}, {});
 
-			return baseArray.map(s => hash[s] && hash[s]-- ? `<del class="text-gray-300">${s}</del> ` : `<strong>${s}</strong>`);
+			return baseArray.map(s => hash[s] && hash[s]-- ? `<del class="text-yellow-400">${s}</del> ` : `<strong>${s}</strong>`);
 		}
 	</script>
 </body>
