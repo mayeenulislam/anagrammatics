@@ -42,7 +42,6 @@
 		x-data="{
 			baseTextArr: [],
 			anagramTextArr: [],
-			matchedArr: [],
 			allChars: 0
 		}"
 	>
@@ -68,14 +67,13 @@
 									autofocus
 									@keyup="
 										baseTextArr = $event.target.value.replace(/\s/g, '').toUpperCase().split('');
-										allChars = baseTextArr.length;
-										matchedArr = findMatchingValues(baseTextArr, anagramTextArr)"
+										allChars = baseTextArr.length;"
 								/>
 							</div>
 							<div
-								class="mb-10 rounded p-2 bg-yellow-100 text-xs min-h-[32px] border border-amber-500"
+								class="mb-10 rounded p-2 bg-sky-900 text-white text-xs min-h-[32px] border border-stone-200"
 								x-show="baseTextArr.length > 0"
-								x-html="strikeMatchingValues(baseTextArr, anagramTextArr, allChars).join(' ');"
+								x-html="findMatchingValues(baseTextArr, anagramTextArr, allChars).join(' ');"
 							></div>
 							<div>
 								<label for="anagram-input" class="font-bold text-white">Anagram</label>
@@ -86,14 +84,12 @@
 									placeholder="Type your anagrammatic text"
 									class="w-full px-3 py-2 rounded bg-sky-950 border border-sky-800 text-white focus:outline-none focus:ring focus:ring-sky-600"
 									autocomplete="off"
-									@keyup="
-										anagramTextArr = $event.target.value.replace(/\s/g, '').toUpperCase().split('');
-										matchedArr = findMatchingValues(baseTextArr, anagramTextArr);"
+									@keyup="anagramTextArr = $event.target.value.replace(/\s/g, '').toUpperCase().split('');"
 								/>
 							</div>
 							<button
 								type="button"
-								class="mt-4 w-full bg-teal-700 text-white px-3 py-2 text-center rounded block"
+								class="mt-4 w-full bg-sky-600 text-white px-3 py-2 text-center rounded block"
 								x-show="baseTextArr.length > 0 && $store.allChars === 0; console.log('👉 ', $store.allChars)"
 							>
 								Save
@@ -117,44 +113,32 @@
 
 	<script>
 		/**
-		 * Find the matching values only.
-		 * Also works with duplicates.
+		 * Strike Matching Values.
 		 * 
-		 * Check on the basis of the anagram array, to get only the matched items.
+		 * @link https://stackoverflow.com/a/76608032/1743124
 		 * 
 		 * @param {array} baseArray - the Base Text characters' array.
 		 * @param {array} anagramArray - the Anagram Text characters' array.
-		 * @returns {array} an array of matching items only.
-		 */
-		const findMatchingValues = (baseArray, anagramArray) => {
-			let matechedArray = [];
-			anagramArray.forEach(char => baseArray.includes(char) ? matechedArray.push(char) : false);
-			return matechedArray;
-		}
-
-		/**
-		 * Strike Matching Values.
-		 * 
-		 * @link https://stackoverflow.com/a/76608040/1743124
-		 * 
-		 * @param {array} baseArray - the Base Text characters' array.
-		 * @param {array} matchedArray - the Matched Text characters' array.
 		 * @returns {array} Striked only the matched characters in an array.
 		 */
-		const strikeMatchingValues = (baseArray, matchedArray, allChars) => {
-			const hash = matchedArray.reduce((h, s) => {
-				h[s] = (h[s] || 0) + 1;
-				return h;
-			}, {});
-			
-			return baseArray.map(function(char) {
-				if(hash[char] && hash[char]--) {
+		const findMatchingValues = (baseArray, anagramArray, allChars) => {
+			const counts = {};
+
+			// Making a dictionary of character counts in anagramArray.
+			anagramArray.forEach(char => {
+				counts[char] = (counts[char] || 0) + 1;
+			});
+
+			const finalArray = baseArray.map((char, i) => {
+				if (counts[char] && counts[char]--) {
 					Alpine.store('allChars', --allChars);
-					return `<del class="text-yellow-400">${char}</del> `
+					return `<del class="text-sky-600">${char}</del> `; 
 				} else {
-					return `<strong>${char}</strong>`
+					return `<strong>${char}</strong>`;
 				}
 			});
+
+			return finalArray;
 		}
 	</script>
 </body>
