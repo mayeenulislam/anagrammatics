@@ -11,6 +11,11 @@
 	AlpineJS
 	---------------------------------- -->
 	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+	<style>
+		[x-cloak] {
+			display: none !important;
+		}
+	</style>
 	
 	<!--
 	Google Fonts
@@ -40,10 +45,14 @@
 	<main
 		class="flex h-screen font-serif"
 		x-data="{
+			baseText: '',
 			baseTextArr: [],
+			anagramText: '',
 			anagramTextArr: [],
+			anagramArr: [],
 			allChars: 0
 		}"
+		x-init="anagramArr = localStorage.getItem('anagrams') ? JSON.parse(localStorage.getItem('anagrams')) : []"
 	>
 		<div class="flex flex-col md:flex-row items-stretch justify-center w-full">
 			<div class="md:basis-1/2 bg-cyan-950">
@@ -57,7 +66,7 @@
 
 							<div class="mb-10">
 								<label for="user-input" class="font-bold text-white">Base Text</label>
-								<span class="text-gray-300 italic text-xs">(e.g. Apple Macintosh)</span>
+								<span class="text-gray-300 italic text-xs" id="base-text-help">(e.g. Apple Macintosh)</span>
 								<input
 									type="text"
 									id="user-input"
@@ -65,9 +74,11 @@
 									placeholder="Type/Paste your text"
 									autocomplete="off"
 									autofocus
+									aria-describedby="base-text-help"
 									@keyup="
 										baseTextArr = $event.target.value.replace(/\s/g, '').toUpperCase().split('');
 										allChars = baseTextArr.length;"
+									x-model="baseText"
 								/>
 							</div>
 							<div
@@ -77,22 +88,34 @@
 							></div>
 							<div>
 								<label for="anagram-input" class="font-bold text-white">Anagram</label>
-								<span class="text-gray-300 italic text-xs">(e.g. laptop machines)</span>
+								<span class="text-gray-300 italic text-xs" id="anagram-help">(e.g. laptop machines)</span>
 								<input
 									id="anagram-input"
 									type="text"
 									placeholder="Type your anagrammatic text"
 									class="w-full px-3 py-2 rounded bg-sky-950 border border-sky-800 text-white focus:outline-none focus:ring focus:ring-sky-600"
 									autocomplete="off"
+									aria-describedby="anagram-help"
 									@keyup="anagramTextArr = $event.target.value.replace(/\s/g, '').toUpperCase().split('');"
+									x-model="anagramText"
 								/>
 							</div>
 							<button
 								type="button"
 								class="mt-4 w-full bg-sky-600 text-white px-3 py-2 text-center rounded block"
-								x-show="baseTextArr.length > 0 && $store.allChars === 0; console.log('👉 ', $store.allChars)"
+								@click="
+									!!baseText && !!anagramText && anagramArr.push(anagramText);
+									localStorage.setItem('anagrams', JSON.stringify(anagramArr));
+									anagramText = '';"
 							>
 								Save
+							</button>
+							<button
+								type="button"
+								class="text-center block w-full px-3 py-2 text-white mt-1 rounded text-sm hover:text-blue-500 hover:bg-sky-100 hover:text-blue-500"
+								@click="localStorage.clear(); anagramArr = [];"
+							>
+								Try with a New Base Text
 							</button>
 						</div>
 						<div class="text-center text-xs text-gray-400 mt-2">
@@ -106,7 +129,35 @@
 			</div>
 			<div class="md:basis-1/2 bg-slate-100 p-10">
 				<div class="text-center font-bold">Anagrammatics</div>
-				<p class="text-center mb-5 text-gray-500 text-sm">Try to make anagram of your base text and save the combination, when you are done</p>
+				<p class="text-center mb-5 text-gray-500 text-sm">Try to make anagram of your base text and when you are done save the combination</p>
+
+				<ol x-show="anagramArr.length" role="presentation">
+					<template x-for="(myAnagram, index) in anagramArr">
+						<li class="p-2 text-sm border border-slate-500 hover:bg-slate-200 ease-in-out duration-300 hover:shadow rounded mb-2 flex items-center justify-between">
+							<span x-text="('0' + (index + 1)).slice(-2)" class="rounded-full w-[25px] h-[25px] bg-sky-600 text-white text-center p-1 inline-block mr-2"></span>
+							<span x-text="myAnagram" class="grow"></span>
+							<button
+								type="button"
+								class="py-1 px-2 rounded list-item--delete text-red-800 hover:bg-red-800 hover:text-white ease-in-out duration-500"
+								@click="
+									anagramArr.splice(index, 1); // https://stackoverflow.com/a/20460414/1743124
+									localStorage.setItem('anagrams', JSON.stringify(anagramArr));"
+								>
+								<span aria-hidden="true">&times;</span>
+								<span class="sr-only">Remove Anagram: <span x-text="myAnagram"></span></span>
+							</button>
+						</li>
+					</template>
+				</ol>
+				<button
+					type="button"
+					class="text-center block w-full px-3 py-2 bg-red-800 uppercase text-white mt-1 rounded text-xs hover:text-white hover:bg-red-700"
+					x-show="anagramArr.length"
+					x-cloak
+					@click="localStorage.clear(); anagramArr = [];"
+				>
+					Trash All the Anagrams
+				</button>
 			</div>
 		</div>
 	</main>
