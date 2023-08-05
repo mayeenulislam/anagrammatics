@@ -2,6 +2,8 @@
 
 Anagrammatics is an open-source mini tool to practice anagrams. For example: "O, Draconian Devil" could be an anagram of "Leonardo Da Vinci". Engaging in anagrams can provide an enjoyable pastime during your leisure moments.
 
+![anagrammatics](https://github.com/mayeenulislam/anagrammatics/assets/4551598/4145dbf7-a26b-472f-a14c-3a46cddfd2e4)
+
 I had a fondness for anagrams since my childhood. And recently I became acquainted with AlipineJS and felt compelled to incorporate this technology into projects aligned with my ideas. Consequently, I embarked on a rather basic experiment with AlpineJS, complemented by TailwindCSS (CDN) for enhancing the visual aesthetics.
 
 > [🔀 **Try Aanagrammatics**](https://mayeenulislam.github.io/anagrammatics/)<br/>
