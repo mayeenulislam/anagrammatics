@@ -109,7 +109,7 @@
 							</div>
 							<button
 								type="button"
-								class="mt-10 w-full bg-sky-600 text-white px-3 py-2 text-center text-sm uppercase rounded block"
+								class="mt-10 w-full bg-sky-600 hover:bg-sky-800 ease-in-out duration-300 text-white px-3 py-2 text-center text-sm uppercase rounded block"
 								@click="storeAnagrams(baseText, anagramText, anagramArr)"
 							>
 								<svg
@@ -155,11 +155,11 @@
 						<ol role="presentation">
 							<template x-for="(myAnagram, index) in anagramArr">
 								<li class="p-2 text-sm border border-slate-500 hover:bg-slate-200 ease-in-out duration-300 hover:shadow rounded mb-2 flex items-center justify-between">
-									<span x-text="('0' + (index + 1)).slice(-2)" class="rounded-full w-[25px] h-[25px] bg-sky-600 text-white text-center p-1 inline-block mr-2"></span>
+									<span x-text="('0' + (index + 1)).slice(-2)" class="rounded-full w-[25px] h-[25px] bg-sky-600 text-white text-center p-1 inline-block mr-2 lining-nums"></span>
 									<span x-text="myAnagram" class="grow"></span>
 									<button
 										type="button"
-										class="py-1 px-2 rounded list-item--delete text-red-800 hover:bg-red-800 hover:text-white ease-in-out duration-500"
+										class="py-1 px-2 rounded list-item--delete text-red-500 hover:bg-red-800 hover:text-white ease-in-out duration-500"
 										@click="
 											anagramArr.splice(index, 1); // https://stackoverflow.com/a/20460414/1743124
 											localStorage.setItem('anagrams', JSON.stringify(anagramArr));"
